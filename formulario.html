@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Prórrogas - Doria</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Tus estilos CSS existentes se mantienen igual */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2c3e50;
+            --primary-dark: #1a252f;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --gray: #7f8c8d;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50, #3498db);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 40px;
+            max-width: 650px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 5px 15px rgba(44, 62, 80, 0.4);
+        }
+        
+        .logo i {
+            font-size: 32px;
+            color: white;
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: var(--gray);
+            font-size: 16px;
+            max-width: 80%;
+            margin: 0 auto;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        label i {
+            margin-right: 8px;
+            color: var(--primary);
+            width: 16px;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 14px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: 15px;
+            transition: var(--transition);
+            font-family: inherit;
+            background-color: var(--light);
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+            background-color: white;
+        }
+        
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            transition: var(--transition);
+            pointer-events: none;
+        }
+        
+        input:focus + i {
+            color: var(--primary);
+        }
+        
+        /* Estilo especial para el campo de fecha */
+        input[type="date"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            position: relative;
+        }
+        
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            color: transparent;
+            background: transparent;
+            cursor: pointer;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(44, 62, 80, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(44, 62, 80, 0.5);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .message.success {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(39, 174, 96, 0.2);
+        }
+        
+        .message.error {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(44, 62, 80, 0.2);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        .required {
+            color: var(--danger);
+            margin-left: 4px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--gray);
+            font-size: 14px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+        
+        /* Nuevo estilo para la advertencia de fecha */
+        .date-warning {
+            font-size: 12px;
+            color: var(--danger);
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-file-contract"></i>
+            </div>
+            <h1>Sistema de Prórrogas</h1>
+            <p class="subtitle">Gestión de Contratos - Productos Alimenticios Doria S.A.S.</p>
+        </div>
+        
+        <form id="prorrogaForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nombreTrabajador">
+                        <i class="fas fa-user"></i>Nombre Completo <span class="required">*</span>
+                    </label>
+                    <div class="input-icon">
+                        <input type="text" id="nombreTrabajador" name="nombreTrabajador" required placeholder="Ej: Juan Pérez García">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cedula">
+                        <i class="fas fa-id-card"></i>Cédula <span class="required">*</span>
+                    </label>
+                    <div class="input-icon">
+                        <input type="text" id="cedula" name="cedula" required placeholder="Ej: 1072718719">
+                        <i class="fas fa-hashtag"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="rol">
+                        <i class="fas fa-briefcase"></i>Rol <span class="required">*</span>
+                    </label>
+                    <div class="input-icon">
+                        <input type="text" id="rol" name="rol" required placeholder="Ej: Analista de Control Gestión">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cargo">
+                        <i class="fas fa-suitcase"></i>Cargo <span class="required">*</span>
+                    </label>
+                    <div class="input-icon">
+                        <input type="text" id="cargo" name="cargo" required placeholder="Ej: Analista de Control Gestión">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fechaInicio">
+                        <i class="fas fa-calendar-alt"></i>Fecha de Inicio <span class="required">*</span>
+                    </label>
+                    <div class="input-icon">
+                        <input type="date" id="fechaInicio" name="fechaInicio" required>
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="date-warning" id="dateWarning">
+                        <i class="fas fa-exclamation-triangle"></i> Está seleccionando una fecha pasada
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="jefe">
+                        <i class="fas fa-user-tie"></i>Jefe Inmediato <span class="required">*</span>
+                    </label>
+                    <div class="input-icon">
+                        <select id="jefe" name="jefe" required>
+                            <option value="">Seleccione un jefe...</option>
+                                   <option value="fosorio@alimentosdoria.com">FABIANA OSORIO RAMOS</option>
+                            <option value="soptransformaciondigital@pastascomarrico.com">Kevin Camilo Delgado</option>
+                            <option value="haleal@alimentosdoria.com">HENRY ALEXANDER LEAL MORENO</option>
+                            <option value="VVIGOYA@ALIMENTOSDORIA.COM">VANESSA VIGOYA ALVAREZ</option>
+                            <option value="CMVENTURA@ALIMENTOSDORIA.COM">CARLOS MIGUEL VENTURA GOMEZ</option>
+                            <option value="dcanon@pastasdoria.com">DIEGO CAÑON BUITRAGO</option>
+                            <option value="AYLOPEZ@ALIMENTOSDORIA.COM">ALBA YAMILE LOPEZ MORENO</option>
+                            <option value="CAAMAYA@ALIMENTOSDORIA.COM">CARLOS ALBERTO AMAYA DURAN</option>
+                            <option value="JGSASTOQUE@ALIMENTOSDORIA.COM">JUAN GABRIEL SASTOQUE ORJUELA</option>
+                            <option value="CANAVAS@ALIMENTOSDORIA.COM">CARLOS ANDRES NAVAS ORDOÑEZ</option>
+                            <option value="czuniga@alimentosdoria.com">CAROLINA ZUÑIGA DIAZ</option>
+                            <option value="starquino@alimentosdoria.com">STEPHANIE TARQUINO FONSECA</option>
+                            <option value="jjrojas@alimentosdoria.com">JOHN JAIRO ROJAS HERNANDEZ</option>
+                            <option value="caduarte@pastasdoria.com">CARLOS ARTURO DUARTE MEDINA</option>
+                            <option value="SGARZON@ALIMENTOSDORIA.COM">SIDNEY GARZON BRAVO</option>
+                            <option value="jamartinez@alimentosdoria.com">JOSE ANTONIO MARTINEZ PERDIGON</option>
+                            <option value="abueno@alimentosdoria.com">ALIRIO ULISES BUENO BERMUDEZ</option>
+                            <option value="CMORGANISTA@ALIMENTOSDORIA.COM">CARLOS MAURICIO ORGANISTA CARDONA</option>
+                            <option value="njguzman@pastasdoria.com">NELSON JAVIER GUZMAN ARANDIO</option>
+                            <option value="JADIAZ@ALIMENTOSDORIA.COM">JORGE ALBERTO DIAZ ORTIZ</option>
+                            <option value="WRSALINAS@ALIMENTOSDORIA.COM">WILSON RAIMUNDO SALINAS ORTIZ</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> Registrar y Enviar Notificación
+            </button>
+        </form>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: var(--primary);">Procesando solicitud...</p>
+        </div>
+        
+        <div class="message" id="message"></div>
+        
+        <div class="footer">
+            <p><i class="fas fa-shield-alt"></i> Sistema seguro - Productos Alimenticios Doria S.A.S.</p>
+        </div>
+    </div>
+    
+    <script>
+        // EN formulario.html - AGREGAR MÁS VALIDACIÓN
+document.getElementById('prorrogaForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const submitBtn = document.getElementById('submitBtn');
+  const loading = document.getElementById('loading');
+  const message = document.getElementById('message');
+  
+  // Validación adicional
+  const fechaInicio = document.getElementById('fechaInicio').value;
+  if (!fechaInicio) {
+    message.style.display = 'block';
+    message.className = 'message error';
+    message.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error: La fecha de inicio es requerida';
+    return;
+  }
+  
+  // Obtener datos del formulario
+  const formData = {
+    nombreTrabajador: document.getElementById('nombreTrabajador').value.trim(),
+    cedula: document.getElementById('cedula').value.trim(),
+    rol: document.getElementById('rol').value.trim(),
+    cargo: document.getElementById('cargo').value.trim(),
+    fechaInicio: fechaInicio,
+    jefe: document.getElementById('jefe').value
+  };
+  
+  // Validar que todos los campos estén llenos
+  for (let key in formData) {
+    if (!formData[key]) {
+      message.style.display = 'block';
+      message.className = 'message error';
+      message.innerHTML = `<i class="fas fa-exclamation-circle"></i> Error: El campo ${key} es requerido`;
+      return;
+    }
+  }
+  
+  // Deshabilitar botón y mostrar loading
+  submitBtn.disabled = true;
+  loading.style.display = 'block';
+  message.style.display = 'none';
+  
+  // Llamar a la función de Apps Script
+  google.script.run
+    .withSuccessHandler(function(result) {
+      submitBtn.disabled = false;
+      loading.style.display = 'none';
+      message.style.display = 'block';
+      message.className = 'message success';
+      message.innerHTML = '<i class="fas fa-check-circle"></i> ' + result;
+      
+      // Limpiar formulario
+      document.getElementById('prorrogaForm').reset();
+    })
+    .withFailureHandler(function(error) {
+      submitBtn.disabled = false;
+      loading.style.display = 'none';
+      message.style.display = 'block';
+      message.className = 'message error';
+      message.innerHTML = '<i class="fas fa-exclamation-circle"></i> Error: ' + error.message;
+      console.error('Error detallado:', error);
+    })
+    .procesarFormulario(formData);
+});
+        
+        // Verificar si la fecha seleccionada es anterior a hoy
+        document.getElementById('fechaInicio').addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Establecer hora a medianoche para comparar solo fechas
+            
+            const warningElement = document.getElementById('dateWarning');
+            
+            if (selectedDate < today) {
+                warningElement.style.display = 'block';
+            } else {
+                warningElement.style.display = 'none';
+            }
+        });
+        
+        // Solución para el calendario en todos los navegadores
+        document.addEventListener('DOMContentLoaded', function() {
+            const fechaInput = document.getElementById('fechaInicio');
+            const calendarIcon = fechaInput.nextElementSibling;
+            
+            // Hacer que el icono del calendario también abra el selector de fecha
+            calendarIcon.style.pointerEvents = 'auto';
+            calendarIcon.style.cursor = 'pointer';
+            
+            calendarIcon.addEventListener('click', function() {
+                fechaInput.showPicker ? fechaInput.showPicker() : fechaInput.focus();
+            });
+        });
+    </script>
+</body>
+</html>
