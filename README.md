@@ -182,4 +182,4 @@ Este proyecto está bajo la licencia MIT. Ver `LICENSE` para más detalles.
 
 
 **Desarrollado para** Productos Alimenticios Doria S.A.S.
-**Desarrolado por KEVIN CAMILO DELGADO RESTREPO
+**Desarrollado por KEVIN CAMILO DELGADO RESTREPO
